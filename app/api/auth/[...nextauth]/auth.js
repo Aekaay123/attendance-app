@@ -35,7 +35,7 @@ export const authconfig={
     },
     async jwt({ user, token }) {
       if (user) {
-        if (user?.email.toLowerCase().trim() === "kenchowangdi936@gmail.com") {
+        if (user?.email.toLowerCase().trim() === "employer190@gmail.com") {
           token.role = "admin";
         } else {
           token.role = "user";
