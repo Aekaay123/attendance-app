@@ -1,5 +1,7 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { app } from "../../../firebase/config";
 
 export const authconfig={
   providers: [Google],
@@ -10,17 +12,18 @@ export const authconfig={
   callbacks: {
     async signIn({ user }) {
       try {
-        const response =await fetch("http://localhost:3000/api/isRegistered", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            Email: user?.email,
-          }),
+        const db = getFirestore(app);
+        const collectionRef = collection(db, "employees");
+        const querySnapshot = await getDocs(collectionRef);
+
+        let isRegistered= false;
+        querySnapshot.forEach((doc) => {
+          if (doc.data().email=== user.email.toLowerCase().trim() || user.email==="kenchowangdi936@gmail.com") {
+            isRegistered = true;
+            return; 
+          }
         });
-        const data= await response.json();
-        if (data.isRegistered) {
+        if (isRegistered) {
           return user;
         } else {
           throw new Error("Not a registered tutor");

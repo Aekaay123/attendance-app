@@ -51,7 +51,6 @@ const AddEmployee = () => {
         toast.success(response.message);
         setisopen(false);
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("An error occurred while adding the manager");
     } finally {

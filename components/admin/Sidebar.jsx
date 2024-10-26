@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import {
   Users,
-  DollarSign,
   ClipboardList,
   LayoutDashboard,
   LogOut,

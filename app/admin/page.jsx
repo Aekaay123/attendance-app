@@ -26,44 +26,6 @@ const Admin = () => {
   const db = getFirestore(app);
   const employeeRef = collection(db, "employees");
 
-  // useEffect(() => {
-  //   const getEmpCntCurrentDate = async () => {
-  //     const employeeSnapShot = await getDocs(employeeRef);
-  //     let employeeCheckInStatus = {};
-  //     let employeeCheckOutStatus = {};
-
-  //     employeeSnapShot.forEach((employeeDoc) => {
-  //       const employeeID = employeeDoc.id;
-  //       const attendanceDocRef = doc(db, "employees", employeeID, "attendance", currentDate);
-
-  //       onSnapshot(attendanceDocRef, (attendanceDocSnap) => {
-  //         if (attendanceDocSnap.exists()) {
-  //           const attendanceData = attendanceDocSnap.data();
-  //           employeeCheckInStatus[employeeID] = !!attendanceData.checkInTime;
-  //           employeeCheckOutStatus[employeeID] = !!attendanceData.checkOutTime;
-
-  //           const checkedInCount = Object.values(employeeCheckInStatus).filter(status => status).length;
-  //           const checkedOutCount = Object.values(employeeCheckOutStatus).filter(status => status).length;
-
-  //           setEmpcnt(checkedInCount);
-  //           setCheckoutCnt(checkedOutCount);
-
-  //           // Set loading states to false once data is set
-  //           setLoadingEmpcnt(false);
-  //           setLoadingCheckoutCnt(false);
-  //         }
-  //       });
-  //     });
-  //   };
-
-  //   getEmpCntCurrentDate();
-
-  //   return () => {
-  //     setEmpcnt(0);
-  //     setCheckoutCnt(0);
-  //   };
-  // }, [db, currentDate]);
-
   useEffect(() => {
     const getEmpCntCurrentDate = async () => {
       const employeeSnapShot = await getDocs(employeeRef);

@@ -15,7 +15,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
 import {
   Table,
   TableBody,
@@ -31,7 +30,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut, useSession } from "next-auth/react";
 import { Skeleton } from "../ui/skeleton";
 
-interface AttendanceRecord {
+type AttendanceRecord = {
   date: string;
   checkInTime: string;
   checkOutLocation: string[];
@@ -39,7 +38,7 @@ interface AttendanceRecord {
   status: string;
   checkInLocation: string[];
   totalHoursWorked: number;
-}
+};
 
 type LocationInfo = {
   countryName: string;
@@ -48,34 +47,35 @@ type LocationInfo = {
 };
 
 const Dashboard = () => {
-  const [attendanceRecords, setAttendanceRecords] = useState<
-    AttendanceRecord[]
-  >([]);
-  const [checkinloading, setCheckInloading] = useState(false);
-  const [checkoutloading, setCheckoutloading] = useState(false);
-  const [rowloading, setrowloading] = useState(true);
+  const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
+  const [checkinLoading, setCheckinLoading] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [rowLoading, setRowLoading] = useState(true);
+  const [location, setLocation] = useState<LocationInfo | null>(null);
+  const [checkin, setCheckin] = useState(false);
+  const [checkout, setCheckout] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const { toast } = useToast();
   const { data: session } = useSession();
-  const [location, setLocation] = useState<LocationInfo | null>(null);
-  const [checkin, setcheckin] = useState(false);
-  const [checkout, setcheckout] = useState(false);
   const formattedDate = format(new Date(), "dd-MM-yyyy");
   const formattedTime = format(new Date(), "hh:mm a");
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
+  // Fetch attendance records for the selected date
   const fetchAttendanceRecord = async (currentDate: Date) => {
-    const response = await fetch("http://localhost:3000/api/fetchAttendance", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        selectedDate: format(currentDate, "dd-MM-yyyy"),
-      }),
-    });
-    const data = await response.json();
-    if (data) {
-      setAttendanceRecords(data);
-      setrowloading(false);
+    try {
+      const response = await fetch("/api/fetchAttendance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ selectedDate: format(currentDate, "dd-MM-yyyy") }),
+      });
+      const data = await response.json();
+      if (data) {
+        setAttendanceRecords(data);
+        setRowLoading(false);
+      }
+    } catch (error) {
+      console.error("Error fetching attendance records:", error);
     }
   };
 
@@ -84,47 +84,34 @@ const Dashboard = () => {
   }, [selectedDate]);
 
   useEffect(() => {
-    const validateCheckin = async () => {
+    const validateCheckinStatus = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3000/api/validateCheckin"
-        );
-        const checkIn = await response.json();
-        if (checkIn.message.hasCheckedIn) {
-          setcheckin(true);
-        } else {
-          setcheckin(false);
-        }
-        if (checkIn.message.hasCheckedOut) {
-          setcheckout(true);
-        } else {
-          setcheckout(false);
-        }
+        const response = await fetch("/api/validateCheckin");
+        const checkInStatus = await response.json();
+        setCheckin(checkInStatus.message.hasCheckedIn);
+        setCheckout(checkInStatus.message.hasCheckedOut);
       } catch (error) {
         console.error("Check-in validation failed:", error);
       }
     };
-
-    validateCheckin();
+    validateCheckinStatus();
   }, []);
 
   useEffect(() => {
     const getLocation = async () => {
       try {
-        const locationData = await fetchUserLocation(); // Fetch location data
+        const locationData = await fetchUserLocation();
         setLocation(locationData);
-      } catch (err) {
+      } catch (error) {
         toast({
           title: "Error",
-          description:
-            "Failed to get location. Please enable location services.",
+          description: "Failed to get location. Please enable location services.",
           variant: "default",
         });
       }
     };
-
     getLocation();
-  }, []);
+  }, [toast]);
 
   const handleLogout = async () => {
     await signOut({ callbackUrl: "/" });
@@ -134,8 +121,9 @@ const Dashboard = () => {
       variant: "default",
     });
   };
+
   const handleCheckIn = async () => {
-    setCheckInloading(true);
+    setCheckinLoading(true);
     try {
       if (!location) {
         toast({
@@ -145,8 +133,7 @@ const Dashboard = () => {
         });
         return;
       }
-
-      const response = await fetch("http://localhost:3000/api/checkin", {
+      const response = await fetch("/api/checkin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -158,30 +145,31 @@ const Dashboard = () => {
           dzongkhag: location.principalSubdivision,
         }),
       });
-      setCheckInloading(false);
       const data = await response.json();
       if (data.message) {
         toast({
-          title: "CheckedIn",
-          description: `${data.message} at ${format(new Date(), "hh:mm a")}`,
+          title: "Checked In",
+          description: `${data.message} at ${formattedTime}`,
           variant: "default",
         });
-        setcheckin(true);
+        setCheckin(true);
         await fetchAttendanceRecord(selectedDate);
       } else {
         throw new Error("Failed to check in");
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
-        title: "Checked in failed",
-        description: `Check in failed:${error}`,
+        title: "Check-in Failed",
+        description: `Error: ${error.message}`,
         variant: "default",
       });
+    } finally {
+      setCheckinLoading(false);
     }
   };
 
   const handleCheckOut = async () => {
-    setCheckoutloading(true);
+    setCheckoutLoading(true);
     try {
       if (!location) {
         toast({
@@ -191,8 +179,7 @@ const Dashboard = () => {
         });
         return;
       }
-
-      const response = await fetch("http://localhost:3000/api/checkout", {
+      const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -204,29 +191,29 @@ const Dashboard = () => {
           dzongkhag: location.principalSubdivision,
         }),
       });
-
-      setCheckoutloading(false);
       const data = await response.json();
-      if (data.message == "Checkout successfull") {
+      if (data.message === "Checkout successful") {
         toast({
-          title: "CheckedOut",
-          description: `${data.message} at ${format(new Date(), "hh:mm a")}`,
+          title: "Checked Out",
+          description: `${data.message} at ${formattedTime}`,
           variant: "default",
         });
-        setcheckout(true);
+        setCheckout(true);
         await fetchAttendanceRecord(selectedDate);
       } else {
         throw new Error("Failed to check out");
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast({
-        title: "Checked out failed",
-        description: `Check in first`,
+        title: "Check-out Failed",
+        description: "Check-in first",
         variant: "default",
       });
+    } finally {
+      setCheckoutLoading(false);
     }
   };
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
@@ -239,7 +226,6 @@ const Dashboard = () => {
             />
             <AvatarFallback>{session?.user?.name?.charAt(0)}</AvatarFallback>
           </Avatar>
-
           <span className="font-medium">{session?.user?.name}</span>
         </div>
         <Button variant="outline" onClick={handleLogout}>
@@ -250,72 +236,55 @@ const Dashboard = () => {
       <h1 className="text-5xl font-bold mb-6 p-3 border-b text-zinc-500 border-gray-200 text-center ">
         Employee Attendance
       </h1>
+
       <div className="grid gap-6 md:grid-cols-2">
+        {/* Check In / Check Out Card */}
         <Card className="flex flex-col gap-3 justify-center">
           <CardHeader>
             <CardTitle className="text-center">Check In / Check Out</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-center space-x-2">
+              {/* Check In AlertDialog */}
               <AlertDialog>
                 <AlertDialogTrigger
-                  className="flex items-center justify-center disabled:text-gray-500 cursor-pointer disabled:hover:bg-white text-xl  py-2 px-4 hover:bg-black hover:text-white border border-black"
+                  className="flex items-center justify-center disabled:text-gray-500 cursor-pointer disabled:hover:bg-white text-xl py-2 px-4 hover:bg-black hover:text-white border border-black"
                   disabled={!isToday(selectedDate) || checkin}
                 >
-                  {checkinloading ? (
-                    <h1>Checking in...</h1>
-                  ) : (
-                    <>
-                      <UserCheck className="mr-2 h-4 w-4" />
-                      Check in
-                    </>
-                  )}
+                  {checkinLoading ? "Checking in..." : <><UserCheck className="mr-2 h-4 w-4" /> Check in</>}
                 </AlertDialogTrigger>
                 <AlertDialogContent className="bg-black/50 max-w-sm tracking-wide text-white">
                   <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This action cannot be undone.You cannot check in again.
+                      This action cannot be undone. You cannot check in again.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleCheckIn}>
-                      Continue
-                    </AlertDialogAction>
+                    <AlertDialogAction onClick={handleCheckIn}>Continue</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
 
+              {/* Check Out AlertDialog */}
               <AlertDialog>
                 <AlertDialogTrigger
-                  className="flex items-center justify-center text-xl py-2 px-4 cursor-pointer disabled:text-gray-500 disabled:hover:bg-white hover:bg-black hover:text-white text-black border border-black"
+                  className="flex items-center justify-center text-xl py-2 px-4 cursor-pointer disabled:text-gray-500 disabled:hover:bg-white hover:bg-black hover:text-white border border-black"
                   disabled={!isToday(selectedDate) || checkout}
                 >
-                  {checkoutloading ? (
-                    <h1>Checking out...</h1>
-                  ) : (
-                    <>
-                      <UserMinus className="mr-2 h-4 w-4" /> Check out
-                    </>
-                  )}
+                  {checkoutLoading ? "Checking out..." : <><UserMinus className="mr-2 h-4 w-4" /> Check out</>}
                 </AlertDialogTrigger>
                 <AlertDialogContent className="bg-black/50 max-w-sm tracking-wide text-white">
                   <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This action cannot be undone.You cannot check out again.
+                      This action cannot be undone. You cannot check out again.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleCheckOut}>
-                      Continue
-                    </AlertDialogAction>
+                    <AlertDialogAction onClick={handleCheckOut}>Continue</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
@@ -323,110 +292,69 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
+        {/* Date Selection Card */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-center">
-              Select date to check your status
-            </CardTitle>
+            <CardTitle className="text-center">Select a Date</CardTitle>
           </CardHeader>
-          <CardContent className="flex justify-center">
+          <CardContent>
             <Calendar
               mode="single"
               selected={selectedDate}
-              onSelect={(date) => date && setSelectedDate(date)}
-              disabled={(date) => isBefore(new Date(), date)}
-              defaultMonth={new Date()}
-              className="rounded-md border"
-              classNames={{
-                day_selected: "bg-black text-white rounded-[9999px] hover:rounded-[9999px] hover:bg-black hover:text-white",
-              }}
-              initialFocus
+              onSelect={(date) => setSelectedDate(date as Date)}
             />
           </CardContent>
         </Card>
       </div>
 
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle className="text-center">
-            Attendance Record for the date: {format(selectedDate, "dd-MM-yyyy")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-gray-100">
-                <TableHead className="border border-gray-300 px-4 py-2">
-                  Date
-                </TableHead>
-                <TableHead className="border border-gray-300 px-4 py-2">
-                  Check in time
-                </TableHead>
-                <TableHead className="border border-gray-300 px-4 py-2">
-                  Check in location
-                </TableHead>
-                <TableHead className="border border-gray-300 px-4 py-2">
-                  Check out time
-                </TableHead>
-                <TableHead className="border border-gray-300 px-4 py-2">
-                  Check out location
-                </TableHead>
-                <TableHead className="border text-center border-gray-300 px-4 py-2">
-                  Total hours worked
-                </TableHead>
-                <TableHead className="border border-gray-300 px-4 py-2">
-                  Status
-                </TableHead>
+      {/* Attendance Table */}
+      <div className="p-3 mt-10">
+        <h2 className="text-center font-medium text-lg mb-4">
+          Attendance Records for {format(selectedDate, "MMM dd, yyyy")}
+        </h2>
+        <Table className="mt-2">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Date</TableHead>
+              <TableHead>Check-In Time</TableHead>
+              <TableHead>Check-Out Time</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Location</TableHead>
+              <TableHead>Total Hours</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rowLoading ? (
+              <TableRow>
+                <TableCell colSpan={6}>
+                  <Skeleton className="h-8 w-full" />
+                </TableCell>
               </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {rowloading ? (
-                <TableRow>
-                  <TableCell colSpan={7}>
-                    <Skeleton className="h-8 w-full bg-gray-300 rounded-xl p-5" />
+            ) : attendanceRecords.length > 0 ? (
+              attendanceRecords.map((record, index) => (
+                <TableRow key={index}>
+                  <TableCell>{record.date}</TableCell>
+                  <TableCell>{record.checkInTime}</TableCell>
+                  <TableCell>{record.checkOutTime || "-"}</TableCell>
+                  <TableCell>{record.status}</TableCell>
+                  <TableCell>
+                    {record.checkInLocation?.[0]} | {record.checkOutLocation?.[0] ?? "-"}
                   </TableCell>
+                  <TableCell>{record.totalHoursWorked ?? "-"}</TableCell>
                 </TableRow>
-              ) : attendanceRecords &&
-                Object.keys(attendanceRecords).length > 0 ? (
-                <TableRow className="border border-gray-300">
-                  <TableCell className="border border-gray-300 px-4 py-2">
-                    {attendanceRecords.id}
-                  </TableCell>
-                  <TableCell className="border border-gray-300 px-4 py-2">
-                    {attendanceRecords.checkInTime}
-                  </TableCell>
-                  <TableCell className="border border-gray-300 px-4 py-2">
-                    {attendanceRecords.checkInLocation}
-                  </TableCell>
-                  <TableCell className="border border-gray-300 px-4 py-2">
-                    {attendanceRecords.checkOutTime}
-                  </TableCell>
-                  <TableCell className="border border-gray-300 px-4 py-2">
-                    {attendanceRecords.checkOutLocation}
-                  </TableCell>
-                  <TableCell className="border text-center border-gray-300 px-4 py-2">
-                    {attendanceRecords.totalHoursWorked}
-                  </TableCell>
-                  <TableCell className="border border-gray-300 px-4 py-2">
-                    {attendanceRecords.status}
-                  </TableCell>
-                </TableRow>
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={7}
-                    className="text-center border border-gray-300 px-4 py-2"
-                  >
-                    No records found for this date.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center">
+                  No attendance records available for this date.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };
+
 export default Dashboard;

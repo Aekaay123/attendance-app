@@ -13,9 +13,7 @@ import {
 import GenerateReport from "../../components/admin/GenerateReport"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "../ui/skeleton";
-import { getFirestore, getDocs, collection, doc, getDoc } from "firebase/firestore";
-import { Button } from "../ui/button";
-import { FileText } from "lucide-react";
+import { getFirestore, getDocs, collection, doc, getDoc } from "firebase/firestore"
 import { app } from "@/app/firebase/config";
 import { format } from "date-fns";
 
