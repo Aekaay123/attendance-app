@@ -66,7 +66,7 @@ const Dashboard = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const fetchAttendanceRecord = async (currentDate: Date) => {
-    const response = await fetch("http://localhost:3000/api/fetchAttendance", {
+    const response = await fetch("/api/fetchAttendance", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
