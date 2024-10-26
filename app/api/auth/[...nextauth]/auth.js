@@ -18,7 +18,7 @@ export const authconfig={
 
         let isRegistered= false;
         querySnapshot.forEach((doc) => {
-          if (doc.data().email=== user.email.toLowerCase().trim() || user.email==="kenchowangdi936@gmail.com") {
+          if (doc.data().email=== user.email.toLowerCase().trim() || user.email==="employer190@gmail.com") {
             isRegistered = true;
             return; 
           }
