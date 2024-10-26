@@ -113,7 +113,7 @@ const Dashboard = () => {
   useEffect(() => {
     const getLocation = async () => {
       try {
-        const locationData = await fetchUserLocation(); // Fetch location data
+        const locationData = await fetchUserLocation(); 
         setLocation(locationData);
       } catch (err) {
         toast({
@@ -148,7 +148,7 @@ const Dashboard = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:3000/api/checkin", {
+      const response = await fetch("/api/checkin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
