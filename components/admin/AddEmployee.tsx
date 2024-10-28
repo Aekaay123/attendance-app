@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { UserPlus } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const formSchema = z.object({
   name: z.string().trim().min(1, { message: "Name is required" }),
@@ -23,6 +24,8 @@ const formSchema = z.object({
 const AddEmployee = () => {
   const [isopen, setisopen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const selectedTheme=useSelector((state:any)=>state.theme.mode);
 
   const handlesubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -66,11 +69,11 @@ const AddEmployee = () => {
           onClick={() => setisopen(true)}
           className="p-2 border outline-none flex items-center gap-x-2 text-black drop-shadow-sm"
         >
-          <UserPlus className="w-4 h-4"/> Add employees 
+          <UserPlus className={`h-4 w-4 ${selectedTheme === "dark" ? "text-white" : "text-black"}`}/>  <span className={`${selectedTheme === "dark" ? "text-white" : "text-black" }`}>Add employees </span>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-center text-white text-lg">
+            <DialogTitle className={`text-center text-white text-lg }`}>
               Add new employee
             </DialogTitle>
           </DialogHeader>
@@ -105,10 +108,10 @@ const AddEmployee = () => {
                 placeholder="Phone number"
               />
             </div>
-            <div className="flex w-full text-center justify-between mt-10">
+            <div className="flex w-full text-center justify-between mt-16">
               <button
                 type="submit"
-                className="bg-black hover:bg-orange-500 text-white w-full px-4 p-3 rounded-xl"
+                className={`bg-black hover:bg-orange-500 text-white w-full px-4 p-3 rounded-xl${selectedTheme === "dark" ? "bg-white border border-white text-black" : "bg-black text-white" }  px-4 py-2 rounded-xl`}
               >
                 {loading ? "ADDING..." : "ADD"}
               </button>

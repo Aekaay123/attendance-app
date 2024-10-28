@@ -27,29 +27,27 @@ const DisplayChart = () => {
     late: "#FFC107",
   };
  
-  // Memoize getLast7Weekdays to avoid recalculating the weekdays
   const getLast7Weekdays = useCallback(() => {
     const days = [];
     let count = 0;
     const today = new Date();
     const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1); // Start from one day before today
+    yesterday.setDate(yesterday.getDate() - 1); 
 
     let currentDate = yesterday;
 
     while (count < 7) {
       const dayOfWeek = currentDate.getDay(); // 0 = Sunday, 6 = Saturday
 
-      // Skip weekends (Saturday = 6, Sunday = 0)
       if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-        days.push(new Date(currentDate)); // Add weekdays to the list
+        days.push(new Date(currentDate)); 
         count++;
       }
 
-      currentDate.setDate(currentDate.getDate() - 1); // Move one day back
+      currentDate.setDate(currentDate.getDate() - 1); 
     }
 
-    return days.reverse(); // Return dates in ascending order
+    return days.reverse();
   }, []);
 
   // Memoize the fetchAttendanceData function to avoid unnecessary re-renders
@@ -90,8 +88,8 @@ const DisplayChart = () => {
       }
 
       attendanceResults.push({
-        name: format(date, "EEE"), // "Mon", "Tue", etc.
-        date: formattedDate,       // e.g., "24-10-2024"
+        name: format(date, "EEE"),
+        date: formattedDate,     
         present: presentCount,
         absent: absentCount,
         late: lateCount,

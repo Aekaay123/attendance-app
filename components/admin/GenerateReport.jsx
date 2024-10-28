@@ -5,9 +5,12 @@ import { format, startOfMonth } from "date-fns";
 import { Button } from "../ui/button";
 import { FileText } from "lucide-react";
 import { app } from "@/app/firebase/config";
+import { useSelector } from "react-redux";
 
 const GenerateReport = () => {
   const [loading, setLoading] = useState(false);
+  
+  const selectedTheme=useSelector((state)=>state.theme.mode);
 
   const fetchAttendanceData = async () => {
     setLoading(true);
@@ -102,11 +105,11 @@ const GenerateReport = () => {
   return (
     <Button
       onClick={handleGenerateReport}
-      className="flex items-center justify-self-end hover:bg-gray-300 gap-2"
+      className={`flex items-center justify-self-end text-sm hover:bg-gray-300 md:text-md gap-2 rounded-lg mt-3 ${selectedTheme === "dark" ? "text-white hover:text-black" : "text-black"}`}
       disabled={loading}
     >
       <FileText className="h-4 w-4" />
-      {loading ? "Generating..." : "Generate Report"}
+      {loading ? "Generating report..." : "Generate Report"}
     </Button>
   );
 };

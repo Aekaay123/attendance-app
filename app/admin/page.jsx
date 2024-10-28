@@ -99,8 +99,8 @@ const Admin = () => {
             <Skeleton className="w-[300px] bg-gray-300 h-[100px] rounded-2xl" />
           </div>
         ) : (
-          <div className="grid max-w-4xl mx-auto mt-4 grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <Card className="rounded-lg">
+          <div className="grid md:max-w-4xl w-full mx-auto mt-4 grid-cols-1 md:grid-cols-3 gap-6 mb-8 md:p-3 py-7 md:py-0 p-5">
+            <Card className="rounded-lg border border-gray-300">
               <CardHeader className="flex flex-row items-center justify-center gap-x-5 space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Total Employees
@@ -113,7 +113,7 @@ const Admin = () => {
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="rounded-lg border border-gray-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Total checkin today: {format(new Date(), "dd-MM-yyyy")}
@@ -124,7 +124,7 @@ const Admin = () => {
                 <div className="text-2xl text-center font-bold">{empcnt}</div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="rounded-lg border border-gray-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Total checkout today: {format(new Date(), "dd-MM-yyyy")}

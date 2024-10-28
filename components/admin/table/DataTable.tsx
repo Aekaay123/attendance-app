@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/table";
 import AddEmployee from "../AddEmployee";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSelector } from "react-redux";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -62,25 +63,27 @@ export function DataTable<TData extends { id: string }, TValue>({
       pagination,
     },
   });
+  
+  const selectedTheme = useSelector((state: any) => state.theme.mode);
 
   const rowCount = table.getFilteredRowModel().rows.length;
 
   return (
-    <>
-      <div className="flex justify-between mb-1">
-        <div className="flex justify-between mx-8 w-full p-3">
-          <input
-            placeholder="Search manager by name..."
-            className="outline-none border-[1.5px] rounded-md text-black p-2"
-            value={(table.getColumn("name")?.getFilterValue() as string) || ""}
-            onChange={(e) =>
-              table.getColumn("name")?.setFilterValue(e.target.value)
-            }
-          />
-          <AddEmployee />
-        </div>
+    <div className="w-full px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
+        <input
+          placeholder="Search manager by name..."
+          className={`w-full sm:w-64 outline-none border ${
+            selectedTheme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100"
+          } rounded-md text-black p-2 mb-2 sm:mb-0`}
+          value={(table.getColumn("name")?.getFilterValue() as string) || ""}
+          onChange={(e) =>
+            table.getColumn("name")?.setFilterValue(e.target.value)
+          }
+        />
+        <AddEmployee />
       </div>
-      <div className="rounded-md border-2 mx-10">
+      <div className="overflow-x-auto rounded-md border-2">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -91,7 +94,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-center text-md font-bold border-r border-gray-300 last:border-r-0"
+                    className="text-center text-sm sm:text-md font-bold border-r border-gray-300 last:border-r-0 p-2 sm:p-4"
                   >
                     {header.isPlaceholder
                       ? null
@@ -101,7 +104,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                         )}
                   </TableHead>
                 ))}
-                <TableHead className="text-center text-md font-bold border-r border-gray-300 last:border-r-0">
+                <TableHead className="text-center text-sm sm:text-md font-bold border-r border-gray-300 last:border-r-0 p-2 sm:p-4">
                   Actions
                 </TableHead>
               </TableRow>
@@ -113,12 +116,12 @@ export function DataTable<TData extends { id: string }, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="text-center hover:bg-white group hover:text-black border-b border-gray-300"
+                  className="text-center  group border-b border-gray-300"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className="border-r border-gray-300 last:border-r-0"
+                      className="border-r border-gray-300 last:border-r-0 p-2 sm:p-4 text-sm sm:text-base"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -128,10 +131,10 @@ export function DataTable<TData extends { id: string }, TValue>({
                   ))}
                   <TableCell
                     key={row.id}
-                    className="border-r border-gray-300 last:border-r-0"
+                    className="border-r border-gray-300 last:border-r-0 p-2 sm:p-4"
                   >
                     <button
-                      className="text-red-600"
+                      className="text-red-600 text-sm sm:text-base"
                       onClick={() => {
                         handleDeleteEmployee(row.original.id);
                       }}
@@ -157,9 +160,9 @@ export function DataTable<TData extends { id: string }, TValue>({
                   className="h-24 text-center"
                 >
                   <div className="w-full space-y-3">
-                    <Skeleton className="w-full bg-gray-300  h-[50px] rounded-md" />
-                    <Skeleton className="w-full bg-gray-300 h-[50px] rounded-md" />
-                    <Skeleton className="w-full bg-gray-300 h-[50px] rounded-md" />
+                    <Skeleton className="w-full bg-gray-300 h-[40px] sm:h-[50px] rounded-md" />
+                    <Skeleton className="w-full bg-gray-300 h-[40px] sm:h-[50px] rounded-md" />
+                    <Skeleton className="w-full bg-gray-300 h-[40px] sm:h-[50px] rounded-md" />
                   </div>
                 </TableCell>
               </TableRow>
@@ -167,16 +170,16 @@ export function DataTable<TData extends { id: string }, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between mx-10 space-x-2 py-4">
+      <div className="flex items-center justify-between space-x-2 py-4">
         <button
           type="button"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
-          className="p-2 bg-gray-200 rounded-md disabled:opacity-50"
+          className="bg-gray-200 rounded-full disabled:opacity-50 "
         >
-          <IoIosArrowBack size={24} className="active:font-bold" />
+          <IoIosArrowBack size={20} className={`rounded-full ${selectedTheme === "dark" ? "text-white bg-black" : "text-black"}`} />
         </button>
-        <span>
+        <span className="text-sm sm:text-base">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}
         </span>
@@ -184,11 +187,11 @@ export function DataTable<TData extends { id: string }, TValue>({
           type="button"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
-          className="p-2 bg-gray-200 rounded-md disabled:opacity-50"
+          className="bg-gray-200 rounded-full disabled:opacity-50"
         >
-          <IoChevronForward size={24} />
+          <IoChevronForward size={20} className={`rounded-full ${selectedTheme === "dark" ? "text-white bg-black" : "text-black"}`} />
         </button>
       </div>
-    </>
+    </div>
   );
 }

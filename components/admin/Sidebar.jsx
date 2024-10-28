@@ -84,7 +84,7 @@ const Sidebar = () => {
       {/* Mobile Hamburger Menu */}
       <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
         <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="md:hidden bg-black text-white fixed top-4 left-4 z-50">
+          <Button variant="outline" size="icon" className="md:hidden bg-black text-white fixed top-0 left-0 z-50">
             <Menu className="h-6 w-6" />
             <span className="sr-only ">Toggle Menu</span>
           </Button>
