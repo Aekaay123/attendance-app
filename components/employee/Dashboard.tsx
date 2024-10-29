@@ -646,7 +646,7 @@ const Dashboard = () => {
       toast({
         title: "Check-out failed",
         description: "Please check in first",
-        variant: "destructive",
+        variant: "default",
       });
     } finally {
       setCheckoutloading(false);
