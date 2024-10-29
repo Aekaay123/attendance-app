@@ -280,17 +280,17 @@ const Attendance = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <Table>
+          <Table> 
             <TableHeader>
               <TableRow>
-                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Sl. No</TableHead>
-                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Email</TableHead>
-                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Check-in</TableHead>
-                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Check-out</TableHead>
-                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Check-in Loc</TableHead>
-                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Check-out Loc</TableHead>
-                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Hours</TableHead>
-                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Status</TableHead>
+                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400 " : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Sl. No</TableHead>
+                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400 " : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Email</TableHead>
+                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Check-in</TableHead>
+                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Check-out</TableHead>
+                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400 " : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Check-in Loc</TableHead>
+                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400 " : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Check-out Loc</TableHead>
+                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400 " : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Hours</TableHead>
+                <TableHead className={`border text-center ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400 " : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>Status</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -307,13 +307,13 @@ const Attendance = () => {
               ) : currentRows.length > 0 ? (
                 currentRows.map((row, index) => (
                   <TableRow key={row.id} className={index % 2 === 0 ? "bg-gray-200" : "bg-white"}>
-                    <TableCell className={`border ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>{index + 1 + indexOfFirstRow}</TableCell>
-                    <TableCell className={`border text-left ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>{row.email}</TableCell>
-                    <TableCell className={`border text-center ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>{row.checkinTime}</TableCell>
-                    <TableCell className={`border text-center ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>{row.checkoutTime}</TableCell>
-                    <TableCell className={`border text-center ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>{row.checkinLocation}</TableCell>
-                    <TableCell className={`border text-center ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>{row.checkoutLocation}</TableCell>
-                    <TableCell className={`border text-center ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>
+                    <TableCell className={`border ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>{index + 1 + indexOfFirstRow}</TableCell>
+                    <TableCell className={`border text-left ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400"  : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>{row.email}</TableCell>
+                    <TableCell className={`border text-center ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>{row.checkinTime}</TableCell>
+                    <TableCell className={`border text-center ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>{row.checkoutTime}</TableCell>
+                    <TableCell className={`border text-center ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>{row.checkinLocation}</TableCell>
+                    <TableCell className={`border text-center ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>{row.checkoutLocation}</TableCell>
+                    <TableCell className={`border text-center ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>
                               {typeof row.totalHoursWorked === 'number' ? Math.round(row.totalHoursWorked * 100) / 100 : "-"}
                                 </TableCell>
 

@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { signIn } from "next-auth/react";
+import { useState } from "react"
+import { motion } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { signIn } from "next-auth/react"
 import {
   Calendar,
   Clock,
@@ -13,10 +13,11 @@ import {
   BarChart,
   Shield,
   Globe,
-} from "lucide-react";
+  LogIn,
+} from "lucide-react"
 
 export default function Homepage() {
-  const [isHovering, setIsHovering] = useState(false);
+  const [isHovering, setIsHovering] = useState(false)
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -27,7 +28,7 @@ export default function Homepage() {
         staggerChildren: 0.2,
       },
     },
-  };
+  }
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -35,12 +36,12 @@ export default function Homepage() {
       y: 0,
       opacity: 1,
     },
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-500 to-green-600 text-white">
       <header className="p-2 sticky top-0 bg-gradient-to-r from-blue-200 to-purple-500 bg-opacity-90 backdrop-blur-sm z-10">
-        <div className=" flex justify-between items-center">
+        <div className="flex justify-between items-center">
           <div className="flex">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -57,12 +58,13 @@ export default function Homepage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <button
+            <Button
               onClick={() => signIn("google")}
-              className="bg-orange-600 p-3 hover:scale-105 transition-colors delay-150 duration-200 rounded-xl font-bold text-md"
+              className="bg-orange-600 hover:bg-orange-700 text-white p-3 hover:scale-105 transition-all duration-300 rounded-xl font-bold text-md shadow-lg flex items-center space-x-2"
             >
-              Sign in with Google
-            </button>
+              <LogIn className="w-5 h-5" />
+              <span>Sign in with Google</span>
+            </Button>
           </motion.div>
         </div>
       </header>
@@ -293,7 +295,7 @@ export default function Homepage() {
         </div>
       </footer>
     </div>
-  );
+  )
 }
 
 function FeatureCard({
@@ -301,9 +303,9 @@ function FeatureCard({
   title,
   children,
 }: {
-  icon: React.ReactNode;
-  title: string;
-  children: React.ReactNode;
+  icon: React.ReactNode
+  title: string
+  children: React.ReactNode
 }) {
   return (
     <motion.div
@@ -323,5 +325,5 @@ function FeatureCard({
         </CardContent>
       </Card>
     </motion.div>
-  );
+  )
 }
