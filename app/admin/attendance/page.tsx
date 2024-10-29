@@ -317,7 +317,7 @@ const Attendance = () => {
                               {typeof row.totalHoursWorked === 'number' ? Math.round(row.totalHoursWorked * 100) / 100 : "-"}
                                 </TableCell>
 
-                    <TableCell className={`border text-center ${selectedTheme === "light" ? "bg-gray-100" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>{row.status}</TableCell>
+                    <TableCell className={`border text-center ${selectedTheme === "light" ? "bg-gray-100 border border-gray-400" : "bg-gray-800"} text-xs sm:text-sm p-1 sm:p-2`}>{row.status}</TableCell>
                   </TableRow>
                 ))
               ) : (
