@@ -781,7 +781,7 @@ const Dashboard = () => {
               defaultMonth={new Date()}
               className="rounded-md border"
               classNames={{
-                day_selected: "bg-black text-white hover:bg-black hover:text-white rounded-[99999px] hover:rounded-[99999px]",
+                day_selected: "bg-black text-white hover:bg-black hover:text-white",
                 day_today: "bg-accent text-accent-foreground rounded-full",
               }}
                    
